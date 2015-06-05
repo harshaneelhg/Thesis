@@ -149,22 +149,54 @@ def preprocess_disease_chem():
 
 ############################################ Main Program ##########################################
 
+# Pre-process data.
 print 'Pre-processing data...'
 n, n_diseases, n_chemicals, n_genes, A, diseases_dict, chem_dict, disease_id, chem_id, gene_id = preprocess_disease_chem()
+
+# Initialize query vector.
 q = scipy.sparse.lil_matrix((1,n),dtype=float)
-k = 2025
-print n_diseases
+
+# Input query node 'k'.
+k = 5020
+
+# Construct sparse query vector.
 q[0,k]=1.0
 print 'Executing query...'
 r1 = rwr_algo(q, 0.9, A)
-#print r1
+
+# Save Ranking results
 scipy.io.savemat('ranking.mat',{'ranking_vector':r1})
 
+# Display query information.
 if k < n_diseases:
-	print 'You are querying for a disease : %s, %s' % (disease_id[k], diseases_dict[disease_id[k]])
+	print '\n***You are querying for a disease : %s, %s\n' % (disease_id[k], diseases_dict[disease_id[k]])
 elif k >= n_diseases and k < n_diseases+n_chemicals:
-	print 'You are qurying for a chemical : %s, %s' % (chem_id[k], chem_dict[chem_id[k]])
+	print '\n***You are qurying for a chemical : %s, %s\n' % (chem_id[k], chem_dict[chem_id[k]])
 else:
-	print 'You are qurying for a gene : %s' % gene_id[k]
+	print '\n***You are qurying for a gene : %s\n' % gene_id[k]
+r1 = r1.todense()
+r1 =r1.tolist()[0]
+d = r1[0:n_diseases]
+c = r1[n_diseases:n_diseases+n_chemicals]
+g = r1[n_diseases+n_chemicals:n]
 
+# Sort Ranking results.
+sorted_d = [[i[0],i[1]] for i in sorted(enumerate(d), key=lambda x:x[1])]
+sorted_c = [[i[0],i[1]] for i in sorted(enumerate(c), key=lambda x:x[1])]
+sorted_g = [[i[0],i[1]] for i in sorted(enumerate(g), key=lambda x:x[1])]
 
+# Print most relevant results for Diseases, Genes and Chemicals.
+print '\nFive most closely associated Diseases are:'
+last = len(sorted_d)-1
+for i in range(0,5):
+	print ('    '+str(i+1)+': %s, %s\n       Score: %s\n') % (disease_id[sorted_d[last-i][0]], diseases_dict[disease_id[sorted_d[last-i][0]]], sorted_d[last-i][1])
+
+print 'Five most closely associated Chemicals are:'
+last = len(sorted_c)-1
+for i in range(0,5):
+	print ('    '+str(i+1)+': %s, %s\n       Score: %s\n') % (chem_id[n_diseases+sorted_c[last-i][0]], chem_dict[chem_id[n_diseases+sorted_c[last-i][0]]], sorted_c[last-i][1])
+
+print 'Five most closely associated Genes are:'
+last = len(sorted_g)-1
+for i in range(0,5):
+	print ('    '+str(i+1)+': %s\n       Score: %s\n') % (gene_id[n_chemicals+n_diseases+sorted_g[last-i][0]], sorted_g[last-i][1])
