@@ -145,15 +145,26 @@ def preprocess_disease_chem():
 		dcg[id2, id1] = 1.0
 
 	dcg = dcg.tocoo()
-	return n, dcg, diseases_dict, chem_dict, disease_id, chem_id, gene_id
+	return n, n_diseases, n_chemicals, n_genes, dcg, diseases_dict, chem_dict, disease_id, chem_id, gene_id
 
 ############################################ Main Program ##########################################
 
 print 'Pre-processing data...'
-n, A, diseases_dict, chem_dict, disease_id, chem_id, gene_id = preprocess_disease_chem()
+n, n_diseases, n_chemicals, n_genes, A, diseases_dict, chem_dict, disease_id, chem_id, gene_id = preprocess_disease_chem()
 q = scipy.sparse.lil_matrix((1,n),dtype=float)
-q[0,0]=1.0
+k = 2025
+print n_diseases
+q[0,k]=1.0
 print 'Executing query...'
 r1 = rwr_algo(q, 0.9, A)
-print r1
+#print r1
 scipy.io.savemat('ranking.mat',{'ranking_vector':r1})
+
+if k < n_diseases:
+	print 'You are querying for a disease : %s, %s' % (disease_id[k], diseases_dict[disease_id[k]])
+elif k >= n_diseases and k < n_diseases+n_chemicals:
+	print 'You are qurying for a chemical : %s, %s' % (chem_id[k], chem_dict[chem_id[k]])
+else:
+	print 'You are qurying for a gene : %s' % gene_id[k]
+
+
