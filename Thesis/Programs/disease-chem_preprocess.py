@@ -146,4 +146,4 @@ with open('gene_id.json', 'w') as outfile:
      json.dump(gene_id, outfile)
 
 # Print elasped time.
-print '\nElasped time: %s seconds' % (time.time()-start)
+print '\nElapsed time: %s seconds' % (time.time()-start)

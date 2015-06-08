@@ -120,4 +120,4 @@ for i in range(0,5):
 	print ('    '+str(i+1)+': %s\n       Score: %s') % (gene_id[str(n_chemicals+n_diseases+sorted_g[last-i][0])], sorted_g[last-i][1])
 
 # Print elasped time.
-print '\nElasped time: %s seconds' % (time.time()-start) 
+print '\nElapsed time: %s seconds' % (time.time()-start) 
