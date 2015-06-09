@@ -1,4 +1,6 @@
 html, body{
+	font-family:  "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	background-color: #B2CCFF;
     height: 100%;
 }
 body h1{
@@ -10,10 +12,13 @@ body h1{
 	background-color: #5C85FF;
 }
 #container_2{
-	padding: 1%;
 	background-color: #B2CCFF;
 }
 #container_2 h3{
+	background-color: #B2CCFF;
+	text-align: center;
+}
+#container_2 h4{
 	text-align: center;
 }
 #container_1 form{
@@ -31,17 +36,23 @@ body h1{
 	text-align: center;
 }
 #container_2_1{
-	width: 30%;
+	padding: 1%;
+	margin: 0.5%;
+	width: 30.33333%;
 	float :left;
-	background-color: #B2CCFF;
+	background-color: #A9DDFF;
 }
 #container_2_2{
-	width: 30%;
+	padding: 1%;
+	margin: 0.5%;
+	width: 30.33333%;
 	float: left;
-	background-color: #B2CCFF;
+	background-color: #A9DDFF;
 }
 #container_2_3{
-	width: 30%;
+	padding: 1%;
+	margin: 0.5%;
+	width: 30.33333%;
 	float:right;
-	background-color: #B2CCFF;
+	background-color: #A9DDFF;
 }

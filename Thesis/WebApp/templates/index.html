@@ -42,17 +42,32 @@
             </div>
         </div>
     </div>
+    {% if 'time' in session %}
     <div id="container">
         <div id="container_2">
-            <h3>Search Results</h3>
+            <h3>Search Results (Query time: {{ time }}seconds.)</h3>
             <div id="container_2_1">
+                <h4>Five most closely associated diseases</h4>
+                {% for m in disease_display %}
+                <p>Disease Name: {{ m[1] }}<br>Disease ID: {{ m[0] }}<br>Score: {{ m[2] }}</p>
+                {% endfor %}
             </div>
             <div id="container_2_2">
+                <h4>Five most closely associated chemicals</h4>
+                {% for m in chem_display %}
+                <p>Chemical Name: {{ m[1] }}<br>Chemical ID: {{ m[0] }}<br>Score: {{ m[2] }}</p>
+                {% endfor %}
             </div>
             <div id="container_2_3">
+                <h4>Five most closely associated genes</h4>
+                {% for m in gene_display %}
+                <p>Gene ID: {{ m[0] }}<br>Score: {{ m[1] }}</p>
+                {% endfor %}
+                <p></p>
             </div>
         </div>
     </div>
+    {% endif %}
     {% with messages = get_flashed_messages() %}
         {% for message in messages %}
             {{message}}
