@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block body %}
+    <h1>Welcome!</h1>
+
+    <select>
+        <option value="temp_disease">Temp Disease</option>
+    </select>
+    <select>
+        <option value="temp_chemical">Temp Chemical</option>
+    </select>
+    <select>
+        <option value="temp_gene">Temp Gene</option>
+    </select>
+    {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            {{message}}
+        {% endfor %}
+    {% endwith %}
+{% endblock %}
