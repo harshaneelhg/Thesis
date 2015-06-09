@@ -124,6 +124,7 @@ start = time.time()
 # Pre-process data.
 print 'Pre-processing data...'
 n, n_diseases, n_chemicals, n_genes, A, diseases_dict, chem_dict, disease_id, chem_id, gene_id = preprocess_disease_chem()
+
 save = {
 		'adjecency_matrix': A,
 		'number_of_nodes': n,
