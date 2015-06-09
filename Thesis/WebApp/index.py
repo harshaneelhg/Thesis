@@ -22,14 +22,26 @@ with open('../Data/chem_id.json') as f:
 with open('../Data/gene_id.json') as f:
     gene_id = dict(json.load(f))
 
+diseases = []
+chemicals = []
+genes = []
+
+for d in disease_id:
+	diseases.append((d,disease_id[d]+' | '+diseases_dict[disease_id[d]]))
+for c in chem_id:
+	chemicals.append((c,chem_id[c]+' | '+chem_dict[chem_id[c]]))
+for g in gene_id:
+	genes.append((g,gene_id[g]))
 
 class Home(flask.views.MethodView):
 
 	def get(self):
-		return flask.render_template('index.html')
+		return flask.render_template('index.html', genes = genes, diseases = diseases, chemicals = chemicals)
 
 	def post(self):
-		pass
+		return flask.render_template('index.html', genes = genes, diseases = diseases, chemicals = chemicals)
+		if 'disease-query' in flask.request.form :
+			index = flask.request.form['disease']
 
 app.add_url_rule(
 				 '/',

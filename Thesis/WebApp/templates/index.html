@@ -1,16 +1,58 @@
 {% extends "base.html" %}
 {% block body %}
-    <h1>Welcome!</h1>
-
-    <select>
-        <option value="temp_disease">Temp Disease</option>
-    </select>
-    <select>
-        <option value="temp_chemical">Temp Chemical</option>
-    </select>
-    <select>
-        <option value="temp_gene">Temp Gene</option>
-    </select>
+    <div id="container_2">
+        <h3>Select Disease, Chemical or Gene to query</h3>
+    </div>
+    <div id="container">
+        <div id="container_1">
+            <div>
+                <div id="container_1_1">
+                    <form action="#" method="POST">
+                        <select name = "disease">
+                            {% for i,d in diseases %}
+                            <option value={{ i }}>{{ d }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="submit" value="Query selected disease!" name="disease_query">
+                    </form>
+                </div>
+                <br><br><hr>
+                <div id="container_1_1">
+                    <form action="#" method="POST">
+                        <select name = "chemical">
+                            {% for j,c in chemicals %}
+                            <option value={{ j }}>{{ c }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="submit" value="Query selected chemical!" name="chemical_query">
+                    </form>
+                </div>
+                <br><br><hr>
+                <div id="container_1_1">
+                    <form action="#" method="POST">
+                        <select name = "gene">
+                            {% for k,g in genes %}
+                            <option value={{ k }}>{{ g }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="submit" value="Query selected gene!" name="gene_query">
+                    </form>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+    <div id="container">
+        <div id="container_2">
+            <h3>Search Results</h3>
+            <div id="container_2_1">
+            </div>
+            <div id="container_2_2">
+            </div>
+            <div id="container_2_3">
+            </div>
+        </div>
+    </div>
     {% with messages = get_flashed_messages() %}
         {% for message in messages %}
             {{message}}

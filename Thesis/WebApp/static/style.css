@@ -1,0 +1,47 @@
+html, body{
+    height: 100%;
+}
+body h1{
+	background-color: #B2CCFF;
+}
+#container_1{
+	height: 50%;
+	padding: 2%;
+	background-color: #5C85FF;
+}
+#container_2{
+	padding: 1%;
+	background-color: #B2CCFF;
+}
+#container_2 h3{
+	text-align: center;
+}
+#container_1 form{
+	padding: 1% 1% 1% 1%;
+}
+#container_1 select{
+	padding: 0.5%;
+	width: 70%;
+	float: left;
+}
+#container_1 input{
+	padding: 0.5%;
+	width: 22%;
+	float:right;
+	text-align: center;
+}
+#container_2_1{
+	width: 30%;
+	float :left;
+	background-color: #B2CCFF;
+}
+#container_2_2{
+	width: 30%;
+	float: left;
+	background-color: #B2CCFF;
+}
+#container_2_3{
+	width: 30%;
+	float:right;
+	background-color: #B2CCFF;
+}
