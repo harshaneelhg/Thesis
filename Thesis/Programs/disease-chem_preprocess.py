@@ -17,6 +17,9 @@ def preprocess_disease_chem():
 			and disease-gene association.
 		Output:
 			n : Size of adjecency matrix.
+			n_diseases : Number of unique diseases.
+			n_chemicals : Number of unique chemicals.
+			n_genes : Number of unique genes.
 			A : Adjecency matrix of disease-chemical-gene association.
 			diseases_dict : Dictionary of disease names and their DOIDs.
 			chem_dict : Dictionary of chemical names and their CHIDs.
