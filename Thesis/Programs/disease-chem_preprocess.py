@@ -138,15 +138,15 @@ save = {
 scipy.io.savemat('../Data/preprocessed_dcg_sparse.mat', save)
 
 # Save dictionaries to JSON files.
-with open('diseases_dict.json', 'w') as outfile:
+with open('../Data/diseases_dict.json', 'w') as outfile:
      json.dump(diseases_dict, outfile)
-with open('chem_dict.json', 'w') as outfile:
+with open('../Data/chem_dict.json', 'w') as outfile:
      json.dump(chem_dict, outfile)
-with open('disease_id.json', 'w') as outfile:
+with open('../Data/disease_id.json', 'w') as outfile:
      json.dump(disease_id, outfile)
-with open('chem_id.json', 'w') as outfile:
+with open('../Data/chem_id.json', 'w') as outfile:
      json.dump(chem_id, outfile)
-with open('gene_id.json', 'w') as outfile:
+with open('../Data/gene_id.json', 'w') as outfile:
      json.dump(gene_id, outfile)
 
 # Print elasped time.

@@ -81,7 +81,7 @@ print 'Executing query...'
 r1 = rwr_algo(q, 0.9, A)
 
 # Save Ranking results
-scipy.io.savemat('ranking.mat',{'ranking_vector':r1})
+scipy.io.savemat('../Data/ranking.mat',{'ranking_vector':r1})
 
 # Display query information.
 if k < n_diseases:
