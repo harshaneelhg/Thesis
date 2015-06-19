@@ -22,8 +22,8 @@ def rwr_algo(q, c, W):
 		Output:
 		r: Sparse relevancy vector with every other node.
 
-		This function implements basic version of RWR to output
-		Relevancy of query node with other nodes in a graph represented
+		This function implements basic version of RWR using recursive update
+		to output Relevancy of query node with other nodes in a graph represented
 		by adjecency matrix W.
 	"""
 
