@@ -1,3 +1,7 @@
+# This piece of code implements pre-processing steps to generate
+# sparse matrix from disease-chemical and disease-gene asscociation
+# data storeed in two separate csv files.
+
 import pandas as pd
 import numpy as np
 import scipy.sparse
@@ -27,7 +31,8 @@ def preprocess_disease_chem():
 			chem_id : Dictionary of column/row numbers of chemicals and their CHID.
 			gene_id : Dictionary of column/row numbers of genes and gene names.
 
-		Matrix structure for Disease-Chemical-Genes association:
+		Block matrix structure for Disease-Chemical-Genes association:
+		(0 indicates block of zeros in block matrix)
 
 				D 		C 		G 
 			-------------------------
