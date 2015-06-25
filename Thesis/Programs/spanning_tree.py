@@ -27,7 +27,7 @@ def find_min_spanning_tree(A):
 	if os.path.exists('../Data/dcg_graph.json'):
 		with open('../Data/dcg_graph.json') as data:
 			d = json.load(data)
-			G = json_graph.node_link_graph(d)
+		G = json_graph.node_link_graph(d)
 
 	# If graph is not preprocessed then convert it to a Graph and save it to a JSON file.
 	else:
