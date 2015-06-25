@@ -10,7 +10,6 @@ from scipy.io import loadmat
 import time
 import json
 import os.path
-import pdb
 
 def find_shortest_path(A, source, target):
 	"""
