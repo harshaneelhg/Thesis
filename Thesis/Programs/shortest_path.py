@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # This piece of code finds out shortest path between two nodes 
 # of Disease-Chemical-Gene association graph using 'Networkx'
 # Python library.

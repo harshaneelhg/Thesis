@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # This piece of code implements pre-processing steps to generate
 # sparse matrix from disease-chemical and disease-gene asscociation
 # data storeed in two separate csv files.

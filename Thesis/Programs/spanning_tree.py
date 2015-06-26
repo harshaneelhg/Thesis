@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # This piece of code finds out minimum spanning tree for 
 # Disease-Chemical-Gene association graph using 'Networkx'
 # Python library.
