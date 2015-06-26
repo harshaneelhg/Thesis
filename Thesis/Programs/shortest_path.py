@@ -45,16 +45,16 @@ def find_shortest_path(A, source, target):
 	run_time = time.time()-start
 	return P, run_time
 
-# Read Data from pre-processed data file
+# Read Data from pre-processed data file.
 data = loadmat('../Data/preprocessed_dcg_sparse.mat')
 
-# Separate Adjecency matrix
+# Separate Adjecency matrix.
 adj = data['adjecency_matrix']
 
-source = 100
-target = 5000
+source = 0
+target = 15000
 
-# Get Minimum Spanning Tree
+# Get Shortest Path.
 path, run_time = find_shortest_path(adj, source, target)
 
 print 'Path: ',
