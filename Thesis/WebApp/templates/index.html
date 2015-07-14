@@ -1,68 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
-    <div>
-    <nav class="navbar navbar-inverse">
-      <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand">RWR Algorithm Simulator for Disease-Chemical-Gene Data</a>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <!--
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-            <li><a href="#">Link</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Separated link</a></li>
-                <li class="divider"></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>
-          </ul>
-        -->
-        <!--
-          <form class="navbar-form navbar-left" role="search">
-            <div class="form-group">
-              <input type="text" class="form-control" placeholder="Search">
-            </div>
-            <button type="submit" class="btn btn-default">Submit</button>
-          </form>
-        -->
-        <!--
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Link</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Dropdown <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li><a href="#">Separated link</a></li>
-              </ul>
-            </li>
-          </ul>
-        -->
-        </div><!-- /.navbar-collapse -->
-      </div><!-- /.container-fluid -->
-    </nav>
     <div class="container">
-        <div class="row panel panel-info" style="background-color: #EBEBEB">
+        <div class="row panel panel-primary" style="background-color: #EBEBEB">
             <div class="panel-heading">
                 <h3 class="panel-title">Select Disease, Chemical or Gene to query</h3>
             </div>
@@ -116,17 +55,17 @@
     <br>
     {% if 'time' in session %}
     <div class="container">
-        <div class="row panel panel-info" style="background-color: #EBEBEB">
+        <div class="row panel panel-primary" style="background-color: #EBEBEB">
             <div class="panel-heading">
                 <h3 class="panel-title">Search Results (Query time: {{ time }} seconds)</h3>
             </div>
             <br>
             <div class="col-lg-4">
-                <div class="panel panel-primary">
+                <div class="panel panel-info">
                     <div class="panel-heading">
                         <h3 class="panel-title">Five most closely associated diseases</h3>
                     </div>
-                    <div class="panel-body bg-info" style="height: 420px;">
+                    <div class="panel-body bg-info" >
                         {% for m in disease_display %}
                         <p><b>Disease Name:</b> {{ m[1] }}<br><b>Disease ID:</b> {{ m[0] }}<br><b>Score:</b> {{ m[2] }}</p>
                         {% endfor %}
@@ -134,11 +73,11 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <div class="panel panel-primary">
+                <div class="panel panel-info">
                     <div class="panel-heading">
                         <h3 class="panel-title">Five most closely associated chemicals</h3>
                     </div>
-                    <div class="panel-body bg-info" style="height: 420px;">
+                    <div class="panel-body bg-info" >
                         {% for m in chem_display %}
                         <p><b>Chemical Name:</b> {{ m[1] }}<br><b>Chemical ID:</b> {{ m[0] }}<br><b>Score:</b> {{ m[2] }}</p>
                         {% endfor %}
@@ -146,13 +85,13 @@
                 </div>
             </div>
             <div class="col-lg-4">
-                <div class="panel panel-primary">
+                <div class="panel panel-info">
                     <div class="panel-heading">
                         <h3 class="panel-title">Five most closely associated genes</h3>
                     </div>
-                    <div class="panel-body bg-info" style="height: 420px;">
+                    <div class="panel-body bg-info" >
                         {% for m in gene_display %}
-                        <p><b>Gene ID:</b> {{ m[0] }}<br><b>Score:</b> {{ m[1] }}</p>
+                        <p><b>Gene Sequence:</b> {{ m[1] }}<br><b>Gene ID:</b> {{ m[0] }}<br><b>Score:</b> {{ m[2] }}</p>
                         {% endfor %}
                     </div>
                 </div>

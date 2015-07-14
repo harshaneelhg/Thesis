@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # This piece of code implements algorithms after preprocessing.
 # This progrm takes input for the query node, creates query vector and
 # calls RWR algorithm to find Disease-Gene_chemical associations.

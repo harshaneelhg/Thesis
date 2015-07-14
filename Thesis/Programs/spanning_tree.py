@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 # This piece of code finds out minimum spanning tree for 
 # Disease-Chemical-Gene association graph using 'Networkx'
 # Python library.
@@ -6,6 +8,7 @@ import scipy.sparse
 from networkx import minimum_spanning_tree
 from networkx import from_scipy_sparse_matrix
 from networkx.readwrite import json_graph
+import networkx as nx
 from scipy.io import loadmat
 import time
 import json

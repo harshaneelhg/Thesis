@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block body %}
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="panel panel-primary" id="in_panel" style="background-color: #EBEBEB">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Input Panel</h3>
+                    </div>
+                    <div class="panel-info">
+                        <div class="panel-heading">
+                            <h4>Analyse Shortest Path</h4>
+                        </div>
+                        <div style="padding-left: 4%; padding-right: 4%; padding-top: 4%">
+                            <form role="form" method="POST">
+                                <div class="form-group">
+                                    <label>Source Node:</label>
+                                    <input type="text" class="form-control" name="source_node" placeholder="Enter Source Node">
+                                    <br>
+                                    <label>Target Node:</label>
+                                    <input type="text" class="form-control" name="target_node" placeholder="Enter Target Node">
+                                    <p class="help-block" style="padding:4%;">Input Node IDs. Node IDs can be Chemical IDs or MESH or OMIM Disease IDs or Gene IDs with appropriate prefixes<br>Example: MESH:C566489 for Myopia or C006463 for Allyl alcohol.</p>
+                                    <input class="btn btn-primary" type="submit" class="form-control" value="Visualize Path!" name="find_path">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="panel-info">
+                        <div class="panel-heading">
+                            <h4>Visualize Connectivity of Multiple Nodes</h4>
+                        </div>
+                        <div style="padding-left: 4%; padding-right: 4%; padding-top: 4%">
+                            <form role="form" method="POST">
+                                <div class="form-group">
+                                    <label for="node1">Input Nodes:</label> 
+                                    <textarea class="form-control" name="input_ids" style="min-height:200px;" placeholder="Input return seperated IDs"></textarea>
+                                    <p class="help-block" style="padding:4%;">Input Node IDs. Node IDs can be Chemical IDs or MESH or OMIM Disease IDs or Gene IDs with appropriate prefixes<br>Example: MESH:C566489 for Myopia or C006463 for Allyl alcohol.</p>
+                                    <input class="btn btn-primary" type="submit" class="form-control" value="Visualize Connectivity!" name="find_connections">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>                  
+            </div>
+            <div class="col-lg-8">
+                <div class="panel panel-primary" style="background-color: #EBEBEB" >
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Visualization Panel</h3>
+                    </div>
+                    <div class="panel-info" id="viz_panel">
+                        <!-- Visualization content will be added here! -->
+                    </div>
+                </div>                  
+            </div>
+        </div>
+        <script type="text/javascript">
+            var h = document.getElementById('in_panel').clientHeight;
+            document.getElementById("viz_panel").style.height=(h-40)+"px";
+        </script>
+
+        {% if "error" in session %}
+        <script type="text/javascript">
+
+        BootstrapDialog.show({
+            type: BootstrapDialog.TYPE_DANGER,
+            title: 'ID Not Found!',
+            message: 'Oops! We could not find one or more specified IDs from given input. Please re-enter correct input and try again!'
+        });
+
+        </script>
+        {% endif %}
+        {% if "path" in session or "connection" in session %}
+
+        <script type="text/javascript">
+            
+          var links = [
+            {% for tree_link in tree_links %}
+
+              {source: "{{ tree_link["source"]|string }}" , target: "{{ tree_link["target"]|string }}", type:"suit"},
+
+            {% endfor %}
+          ];
+
+          var nodes = {};
+
+          // Compute the distinct nodes from the links.
+          links.forEach(function(link) {
+            link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
+            link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
+          });
+
+          var width = document.getElementById('viz_panel').clientWidth,
+              height = document.getElementById('viz_panel').clientHeight;
+
+          var force = d3.layout.force()
+              .nodes(d3.values(nodes))
+              .links(links)
+              .size([width, height])
+              .linkDistance(150)
+              .charge(-300)
+              .on("tick", tick)
+              .start();
+
+          var svg = d3.select("#viz_panel").append("svg")
+              .attr("width", width)
+              .attr("height", height);
+
+          var link = svg.selectAll(".link")
+              .data(force.links())
+            .enter().append("line")
+              .attr("class", "link");
+
+          var node = svg.selectAll(".node")
+              .data(force.nodes())
+            .enter().append("g")
+              .attr("class", "node")
+              .attr("id", function(d){
+                var node_name = String(d.name)
+                if(node_name.indexOf("Disease")>-1){
+                  return ("disease-node");
+                }
+                else if(node_name.indexOf("Chemical")>-1){
+                  return ("chem-node");
+                }
+                else{
+                  return("gene-node");
+                }
+              })
+              .on("mouseover", mouseover)
+              .on("mouseout", mouseout)
+              .call(force.drag);
+
+          node.append("circle")
+              .attr("r", 8);
+
+          node.append("text")
+              .attr("x", 12)
+              .attr("dy", ".35em")
+              .text(function(d) { return d.name; });
+
+          function tick() {
+            link
+                .attr("x1", function(d) { return d.source.x; })
+                .attr("y1", function(d) { return d.source.y; })
+                .attr("x2", function(d) { return d.target.x; })
+                .attr("y2", function(d) { return d.target.y; });
+
+            node
+                .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+          }
+
+          function mouseover() {
+            d3.select(this).select("circle").transition()
+                .duration(750)
+                .attr("r", 16);
+          }
+
+          function mouseout() {
+            d3.select(this).select("circle").transition()
+                .duration(750)
+                .attr("r", 8);
+          }
+        </script>
+
+        {% endif %}
+    </div>
+    {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+            {{message}}
+        {% endfor %}
+    {% endwith %}
+{% endblock %}

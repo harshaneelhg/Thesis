@@ -1,0 +1,1 @@
+{"name": "root", "children": [{"name": "Gene: 2", "children": [{"name": "Gene: 1", "size": 5914}, {"name": "Gene: 3", "size": 5914}]}, {"name": "Gene: 3", "children": [{"name": "Gene: 2", "size": 5914}, {"name": "Gene: 9", "size": 5914}]}]}
