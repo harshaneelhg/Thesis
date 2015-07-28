@@ -16,10 +16,10 @@
                             <form role="form" method="POST">
                                 <div class="form-group">
                                     <label>Source Node:</label>
-                                    <input type="text" class="form-control" name="source_node" placeholder="Enter Source Node">
+                                    <input type="text" class="form-control" name="source_node" id="src_node" placeholder="Enter Source Node">
                                     <br>
                                     <label>Target Node:</label>
-                                    <input type="text" class="form-control" name="target_node" placeholder="Enter Target Node">
+                                    <input type="text" class="form-control" name="target_node" id="tgt_node" placeholder="Enter Target Node">
                                     <p class="help-block" style="padding:4%;">Input Node IDs. Node IDs can be Chemical IDs or MESH or OMIM Disease IDs or Gene IDs with appropriate prefixes<br>Example: MESH:C566489 for Myopia or C006463 for Allyl alcohol.</p>
                                     <input class="btn btn-primary" type="submit" class="form-control" value="Visualize Path!" name="find_path">
                                 </div>
@@ -33,8 +33,11 @@
                         <div style="padding-left: 4%; padding-right: 4%; padding-top: 4%">
                             <form role="form" method="POST">
                                 <div class="form-group">
-                                    <label for="node1">Input Nodes:</label> 
-                                    <textarea class="form-control" name="input_ids" style="min-height:200px;" placeholder="Input return seperated IDs"></textarea>
+                                    <label for="node1">Input Nodes:</label>
+                                    <br>
+                                    <input type="text" class="form-control" id="add_node" placeholder="Enter Node IDs to Add" style="width:65%">
+                                    <button type="button" id="add_button" class="btn btn-default" style="width:35%">Add Node</button>
+                                    <textarea class="form-control" name="input_ids" id="txt_ids" style="min-height:200px;" placeholder="Input return seperated IDs"></textarea>
                                     <p class="help-block" style="padding:4%;">Input Node IDs. Node IDs can be Chemical IDs or MESH or OMIM Disease IDs or Gene IDs with appropriate prefixes<br>Example: MESH:C566489 for Myopia or C006463 for Allyl alcohol.</p>
                                     <input class="btn btn-primary" type="submit" class="form-control" value="Visualize Connectivity!" name="find_connections">
                                 </div>
@@ -56,7 +59,35 @@
         </div>
         <script type="text/javascript">
             var h = document.getElementById('in_panel').clientHeight;
-            document.getElementById("viz_panel").style.height=(h-40)+"px";
+            document.getElementById("viz_panel").style.height=(h-70)+"px";
+            $(function(){
+                $("#add_button").click(function(){
+                    var txtar_ids = $("#txt_ids").val();
+                    var new_id = $("#add_node").val();
+                    if(txtar_ids.indexOf(new_id)==-1 ){
+                      $("#txt_ids").val(txtar_ids+(txtar_ids==""?"":"\n")+new_id);
+                    }
+                    else if(txtar_ids==""){
+                      BootstrapDialog.show({
+                        type: BootstrapDialog.TYPE_DANGER,
+                        title: 'No ID selected',
+                        message: 'Please select some ID.'
+                      });
+                    }
+                    else{
+                      BootstrapDialog.show({
+                        type: BootstrapDialog.TYPE_DANGER,
+                        title: 'ID already added!',
+                        message: 'Cannot add duplicate IDs! Please enter another ID.'
+                      });
+                    }
+                });
+            });
+            $(function(){
+                $("#add_node").click(function(){
+                  var new_id = $("#add_node").val("");
+                });
+            });
         </script>
 
         {% if "error" in session %}
@@ -73,7 +104,8 @@
         {% if "path" in session or "connection" in session %}
 
         <script type="text/javascript">
-            
+
+          var selected = {{ selected|safe }}
           var links = [
             {% for tree_link in tree_links %}
 
@@ -90,6 +122,7 @@
             link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
           });
 
+
           var width = document.getElementById('viz_panel').clientWidth,
               height = document.getElementById('viz_panel').clientHeight;
 
@@ -98,7 +131,7 @@
               .links(links)
               .size([width, height])
               .linkDistance(150)
-              .charge(-300)
+              .charge(-1000)
               .on("tick", tick)
               .start();
 
@@ -125,6 +158,15 @@
                 }
                 else{
                   return("gene-node");
+                }
+              })
+              .classed("selected", function(d){
+                var node_name = String(d.name)
+                if(selected.indexOf(node_name)>-1){
+                  return true;
+                }
+                else{
+                  return false;
                 }
               })
               .on("mouseover", mouseover)
@@ -161,6 +203,7 @@
                 .duration(750)
                 .attr("r", 8);
           }
+
         </script>
 
         {% endif %}

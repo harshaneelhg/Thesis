@@ -28,12 +28,6 @@ n_diseases = int(data['number_of_diseases'])
 n_chemicals = int(data['number_of_chemicals'])
 n_genes = int(data['number_of_genes'])
 
-# Load Graph
-print 'Loading graph...'
-G = ""
-G=nx.read_gpickle("../Data/dcg_graph.gpickle")
-print 'Graph loaded...'
-
 # Read dictionaries which keep track of IDs and names.
 with open('../Data/diseases_dict_new.json') as f:
     diseases_dict = dict(json.load(f))
@@ -66,6 +60,13 @@ for c in chem_id:
 for g in gene_id:
 	genes.append((g,str(gene_id[g])+' | '+gene_dict[str(gene_id[g])]))
 
+# Load Graph
+print 'Loading graph...'
+G = ""
+G=nx.read_gpickle("../Data/dcg_graph.gpickle")
+print 'Graph loaded...'
+
+# Get name of the disease, chemical or gene for given index.
 def get_name(node_id):
 	if str(node_id) in disease_id:
 		return 'Disease: '+str(disease_id[str(node_id)])
@@ -76,6 +77,7 @@ def get_name(node_id):
 	else:
 		return 'error'
 
+# BFS implementation to get json version of graph.
 def get_json(tree, node, visited):
 	if tree.degree(node) == 1:
 		return {"name" : get_name(node)}
@@ -89,28 +91,38 @@ def get_json(tree, node, visited):
 				sub_tree["children"].append(child_tree)
 		return sub_tree
 
-def get_shortest_path(source, target):
-	P = nx.shortest_path(G, source = source, target = target) 
-	return P
+# Returns list of links in a graph.
+def get_links(st_links, link_type, n_path):
+	if link_type == 'path':
+		edges = nx.edges(st_links)
+		l = []
+		for edge in edges:
+			l.append({'source': str(get_name(edge[0]))+'('+str(n_path)+')', 'target':str(get_name(edge[1]))+'('+str(n_path)+')'})
+		return l
+	else:
+		edges = nx.edges(st_links)
+		l = []
+		for edge in edges:
+			l.append({'source': str(get_name(edge[0])), 'target':str(get_name(edge[1]))})
+		return l
 
-def get_spanning_tree(graph):
-	T = nx.minimum_spanning_tree(G)
-	return T
-
-def get_connections(graph):
-	return get_spanning_tree(graph)
-
-def path_to_graph(path):
-	G = nx.Graph()
-	G.add_path(path)
-	return G
-
-def get_links(st_links):
-	edges = nx.edges(st_links)
-	l = []
-	for edge in edges:
-		l.append({'source': str(get_name(edge[0])), 'target':str(get_name(edge[1]))})
-	return l
+# Returns IDs for Diseases, Chemicals or Genes.
+def get_key(query,query_type):
+	if query_type == "disease":
+		keys = diseases_dict.keys()
+		for k in keys:
+			if diseases_dict[k] == query:
+				return k
+	elif query_type == "chem":
+		keys = chem_dict.keys()
+		for k in keys:
+			if chem_dict[k] == query:
+				return k
+	else:
+		keys = gene_dict.keys()
+		for k in keys:
+			if gene_dict[k] == query:
+				return k
 
 # Create a view for homepage.
 class Home(flask.views.MethodView):
@@ -190,7 +202,9 @@ class Connections(flask.views.MethodView):
 			session.remove('path')
 		return flask.render_template('connections.html', session= session)
 
+	# Define post method.
 	def post(self):
+		# Handle request for shortest path.
 		if 'find_path' in flask.request.form:
 			session = []
 			session.append("path")
@@ -217,61 +231,67 @@ class Connections(flask.views.MethodView):
 				session.remove("path")
 				session.append("error")
 				return flask.render_template('connections.html', session= session)
-			path = get_shortest_path(source_id, target_id)
-			tree = nx.Graph()
-			tree.add_path(path)
-			#nodes = tree.nodes()
-			#pdb.set_trace()
-			#root = nodes[len(path)/2]
-			#while tree.degree(root) == 1:
-			#	x = random.randint(0,len(path)-1)
-			#	root = nodes[x]
-			#H = get_json(tree, root, [root])
-			#json_tree = json.dumps(H).encode('utf8')
-			return flask.render_template('connections.html', session= session, tree_links=get_links(tree))
-		#pdb.set_trace()
+			if nx.has_path(G, source_id, target_id):	
+				path = nx.all_shortest_paths(G, source_id, target_id)
+			else:
+				path = [[source_id,source_id],[target_id,target_id]]
+			selected = list()
+			all_links = list()
+			n_paths = 0
+			for p in path:
+				tree = nx.Graph()
+				tree.add_path(p)
+				l = get_links(tree,'path',n_paths+1)
+				all_links = all_links + l
+				n_paths = n_paths + 1
+				selected.append(get_name(source_id)+'('+str(n_paths)+')')
+				selected.append(get_name(target_id)+'('+str(n_paths)+')')
+				if n_paths >= 3:
+					break
+			return flask.render_template('connections.html', session= session, tree_links=all_links, selected=selected)
+		# Handle request for Steiner tree visualization.
 		if 'find_connections' in flask.request.form:
 			session = []
 			session.append('connection')
-
+			# Separate IDs from input textarea.
 			ids = str(flask.request.form['input_ids'])
-
+			ids = ids.strip()
 			ids = ids.split('\n')
-			#pdb.set_trace()
+			selected = []
 			list_ids = []
 			for i in ids:
+				# Reverse lookup dictionary to find indices of IDs in the graph.
 				if str(i.strip()) in disease_rev_lookup:
 					list_ids.append(int(disease_rev_lookup[str(i.strip())]))
 				elif str(i.strip()) in chem_rev_lookup:
 					list_ids.append(int(chem_rev_lookup[str(i.strip())]))
 				elif str(i.strip()) in gene_rev_lookup:
 					list_ids.append(int(gene_rev_lookup[str(i.strip())]))
+				# Throw error if ID/s are inappropriate. 
 				else:
-					pdb.set_trace()
 					session.remove('connection')
 					session.append('error')
 					return flask.render_template('connections.html', session= session)
-			#pdb.set_trace()
+			# Initialize an empty graph.
 			st_graph = nx.Graph()
-			#p1= [1000,1001,1002,1003,1004]
-			#p2 = [2000,1001,2002,2004,1003]
-			#st_graph.add_path(p1)
-			#st_graph.add_path(p2)
+			# Add shortest path to graph between every pair of node.
+			isolated_paths = []
 			for a in list_ids:
 				for b in list_ids:
-					P = get_shortest_path(a,b)
-					st_graph.add_path(P)
+					if nx.has_path(G,a,b):
+						P = nx.shortest_path(G,a,b)
+						st_graph.add_path(P)
+					else:
+						isolated_paths.append([a,a])
+						isolated_paths.append([b,b])
+				selected.append(get_name(a))
 			nodes = st_graph.nodes()
-			#pdb.set_trace()
-			root = nodes[len(nodes)/2]
-			while st_graph.degree(root) == 1:
-				x = random.randint(0,len(nodes)-1)
-				root = nodes[x]
+			# Find spanning tree of subgraph created by adding shortest paths every pair of nodes.
 			steiner_tree = nx.minimum_spanning_tree(st_graph)
-			H = get_json(st_graph, root, [root])
-			#json_tree = json.dumps(H).encode('utf8')
-			st_links = get_links(steiner_tree)
-			return flask.render_template('connections.html', session= session, tree_links=st_links) 
+			for ip in isolated_paths:
+				steiner_tree.add_path(ip)
+			st_links = get_links(steiner_tree,'conn',0)
+			return flask.render_template('connections.html', session= session, tree_links=st_links, selected=selected) 
 
 # Add links in the context of web application.
 app.add_url_rule(
@@ -284,5 +304,36 @@ app.add_url_rule(
 				 view_func=Connections.as_view('connections'),
 				 methods=['GET', 'POST']
 				)
+
+# Add a route for AJAX call for search query.
+@app.route('/get_info', methods=['GET'])
+def get_info():
+	query = flask.request.args['search']
+	if query in diseases_dict:
+		message = "Type : Disease\n"+"Name : "+str(diseases_dict[str(query)])+"\nID : "+str(query)
+	elif query in diseases_dict.values():
+		message = "Type : Disease\n"+"Name : "+str(query)+"\nID : "+ get_key(query,"disease")
+	elif query in chem_dict:
+		message = "Type : Chemical\n"+"Name : "+str(chem_dict[str(query)])+"\nID : "+str(query)
+	elif query in chem_dict.values():
+		message = "Type : Chemical\n"+"Name : "+str(query)+"\nID : "+ get_key(query,"chem")
+	elif query in gene_dict:
+		message = "Type : Gene\n"+"Name : "+str(gene_dict[str(query)])+"\nID : "+str(query)
+	elif query in gene_dict.values():
+		message = "Type : Gene\n"+"Name : "+str(query)+"\nID : "+ get_key(query,"gene")
+	else:
+		message = "Incorrect query!"
+	return json.dumps({'message': message})
+
+# Add route to populate autocomplete options for AJAX call.
+@app.route('/get_available_options', methods=['GET'])
+def get_available_options():
+	option = flask.request.args['type']
+	if option == "all":
+		return json.dumps({'names' : diseases_dict.values()+chem_dict.values()+gene_dict.values(), 'ids' : diseases_dict.keys()+chem_dict.keys()+gene_dict.keys()})
+	else:
+		return json.dumps({'error' : "Invalid query option..."})
+
+
 app.debug = True
-app.run()
+app.run(port=6063)

@@ -1,107 +1,107 @@
-{% extends "base.html" %}
-{% block body %}
-    <div class="container">
-        <div class="row panel panel-primary" style="background-color: #EBEBEB">
-            <div class="panel-heading">
-                <h3 class="panel-title">Select Disease, Chemical or Gene to query</h3>
-            </div>
-            <div class="row" style="padding-left: 2%; padding-right: 2%; padding-top: 2%">
-                <form method="POST">
-                    <div class="col-lg-8">
-                        <select class="form-control" name = "disease">
-                            {% for i,d in diseases %}
-                            <option value={{ i }}>{{ d }}</option>
-                            {% endfor %}
-                        </select>
+        {% extends "base.html" %}
+        {% block body %}
+            <div class="container">
+                <div class="row panel panel-primary" style="background-color: #EBEBEB">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Select Disease, Chemical or Gene to query</h3>
                     </div>
-                    <div class="col-lg-4">
-                        <input class="btn btn-primary" type="submit" value="Query selected disease!" name="disease_query">
+                    <div class="row" style="padding-left: 2%; padding-right: 2%; padding-top: 2%">
+                        <form method="POST">
+                            <div class="col-lg-8">
+                                <select class="form-control" name = "disease">
+                                    {% for i,d in diseases %}
+                                    <option value={{ i }}>{{ d }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-lg-4">
+                                <input class="btn btn-primary" type="submit" value="Query selected disease!" name="disease_query">
+                            </div>
+                        </form>
                     </div>
-                </form>
-            </div>
-            <hr>
-            <div class="row" style="padding-left: 2%; padding-right: 2%;">
-                <form method="POST">
-                    <div class="col-lg-8">
-                        <select class="form-control" name = "chemical">
-                            {% for j,c in chemicals %}
-                            <option value={{ j }}>{{ c }}</option>
-                            {% endfor %}
-                        </select>
+                    <hr>
+                    <div class="row" style="padding-left: 2%; padding-right: 2%;">
+                        <form method="POST">
+                            <div class="col-lg-8">
+                                <select class="form-control" name = "chemical">
+                                    {% for j,c in chemicals %}
+                                    <option value={{ j }}>{{ c }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-lg-4">
+                                <input class="btn btn-primary" type="submit" value="Query selected chemical!" name="chemical_query">
+                            </div>
+                        </form>
                     </div>
-                    <div class="col-lg-4">
-                        <input class="btn btn-primary" type="submit" value="Query selected chemical!" name="chemical_query">
+                    <hr>
+                    <div class="row" style="padding-left: 2%; padding-right: 2%; padding-bottom: 2%">
+                        <form method="POST">
+                            <div class="col-lg-8">
+                                <select class="form-control" name = "gene">
+                                    {% for k,g in genes %}
+                                    <option value={{ k }}>{{ g }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-lg-4">
+                                <input class="btn btn-primary" type="submit" value="Query selected gene!" name="gene_query">
+                            </div>
+                        </form> 
+                        <br>
                     </div>
-                </form>
-            </div>
-            <hr>
-            <div class="row" style="padding-left: 2%; padding-right: 2%; padding-bottom: 2%">
-                <form method="POST">
-                    <div class="col-lg-8">
-                        <select class="form-control" name = "gene">
-                            {% for k,g in genes %}
-                            <option value={{ k }}>{{ g }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-lg-4">
-                        <input class="btn btn-primary" type="submit" value="Query selected gene!" name="gene_query">
-                    </div>
-                </form> 
-                <br>
-            </div>
-        </div>
-    </div>
-    <br>
-    {% if 'time' in session %}
-    <div class="container">
-        <div class="row panel panel-primary" style="background-color: #EBEBEB">
-            <div class="panel-heading">
-                <h3 class="panel-title">Search Results (Query time: {{ time }} seconds)</h3>
+                </div>
             </div>
             <br>
-            <div class="col-lg-4">
-                <div class="panel panel-info">
+            {% if 'time' in session %}
+            <div class="container">
+                <div class="row panel panel-primary" style="background-color: #EBEBEB">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Five most closely associated diseases</h3>
+                        <h3 class="panel-title">Search Results (Query time: {{ time }} seconds)</h3>
                     </div>
-                    <div class="panel-body bg-info" >
-                        {% for m in disease_display %}
-                        <p><b>Disease Name:</b> {{ m[1] }}<br><b>Disease ID:</b> {{ m[0] }}<br><b>Score:</b> {{ m[2] }}</p>
-                        {% endfor %}
+                    <br>
+                    <div class="col-lg-4">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Five most closely associated diseases</h3>
+                            </div>
+                            <div class="panel-body bg-info" >
+                                {% for m in disease_display %}
+                                <p><b>Disease Name:</b> {{ m[1] }}<br><b>Disease ID:</b> {{ m[0] }}<br><b>Score:</b> {{ m[2] }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Five most closely associated chemicals</h3>
+                            </div>
+                            <div class="panel-body bg-info" >
+                                {% for m in chem_display %}
+                                <p><b>Chemical Name:</b> {{ m[1] }}<br><b>Chemical ID:</b> {{ m[0] }}<br><b>Score:</b> {{ m[2] }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Five most closely associated genes</h3>
+                            </div>
+                            <div class="panel-body bg-info" >
+                                {% for m in gene_display %}
+                                <p><b>Gene Sequence:</b> {{ m[1] }}<br><b>Gene ID:</b> {{ m[0] }}<br><b>Score:</b> {{ m[2] }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Five most closely associated chemicals</h3>
-                    </div>
-                    <div class="panel-body bg-info" >
-                        {% for m in chem_display %}
-                        <p><b>Chemical Name:</b> {{ m[1] }}<br><b>Chemical ID:</b> {{ m[0] }}<br><b>Score:</b> {{ m[2] }}</p>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="panel panel-info">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Five most closely associated genes</h3>
-                    </div>
-                    <div class="panel-body bg-info" >
-                        {% for m in gene_display %}
-                        <p><b>Gene Sequence:</b> {{ m[1] }}<br><b>Gene ID:</b> {{ m[0] }}<br><b>Score:</b> {{ m[2] }}</p>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-    {% with messages = get_flashed_messages() %}
-        {% for message in messages %}
-            {{message}}
-        {% endfor %}
-    {% endwith %}
-{% endblock %}
+            {% endif %}
+            {% with messages = get_flashed_messages() %}
+                {% for message in messages %}
+                    {{message}}
+                {% endfor %}
+            {% endwith %}
+        {% endblock %}

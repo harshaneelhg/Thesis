@@ -5,11 +5,16 @@
         <title>Disease-Chemical-Gene association</title>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script type="text/javascript" src="static/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="static/js/jquery-ui-1.9.2.custom.min.js"></script>
         <script type="text/javascript" src="static/js/bootstrap-dialog.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+        <link rel="shortcut icon" type="image" href="images/icon.png"/>
         <link rel="stylesheet" type="text/css" href="static/css/bootstrap.min.css"/>
         <link rel="stylesheet" type="text/css" href="static/css/bootstrap-theme.min.css"/>
         <link rel="stylesheet" type="text/css" href="static/css/bootstrap-dialog.css"/>
+        <link rel="stylesheet" type="text/css" href="static/css/jquery-ui-1.10.0.custom.css"/>
+        <link rel="stylesheet" type="text/css" href="static/css/jquery-ui.structure.min.css"/>
+        <link rel="stylesheet" type="text/css" href="static/css/jquery-ui.theme.min.css"/>
     </head>
     <style>
 
@@ -36,6 +41,15 @@
       stroke: steelblue;
       stroke-width: 3px;
     }
+    .selected#disease-node circle{
+      stroke: tomato;
+    }
+    .selected#chem-node circle{
+      stroke: tomato;
+    }
+    .selected#gene-node circle{
+      stroke: tomato;
+    }
 
     .node text { font: 12px sans-serif; }
 
@@ -43,6 +57,11 @@
       fill: none;
       stroke: #ccc;
       stroke-width: 2px;
+    }
+    .ui-autocomplete {
+      max-height: 500px;
+      overflow-y: auto;
+      overflow-x: auto;
     }
 
     </style>
@@ -85,9 +104,9 @@
                     
                       <form class="navbar-form navbar-right" role="search">
                         <div class="form-group">
-                          <input type="text" class="form-control" placeholder="Search">
+                          <input type="text" id="search_query" class="form-control" placeholder="Search Names or IDs" style="width: 100%">
                         </div>
-                        <button type="submit" class="btn btn-default">Submit</button>
+                        <button type="button" id="search_button" class="btn btn-default">Submit</button>
                       </form>
                     
                     
@@ -114,6 +133,74 @@
         </div>
         <div id="content">
             {% block body %}{% endblock %}
-        </div>     
+        </div>
+        <script type="text/javascript">
+            $(function(){
+                $.ajax({
+                    url: "/get_available_options",
+                    data : {type:"all"},
+                    success: function(response){
+                        op_names = JSON.parse(response)["names"];
+                        op_ids = JSON.parse(response)["ids"]
+                        $("#search_query").autocomplete({
+                            source: op_names.concat(op_ids),
+                            minLength: 2
+                        });
+                        $("#src_node").autocomplete({
+                            source: op_ids,
+                            minLength: 3
+                        });
+                        $("#tgt_node").autocomplete({
+                            source: op_ids,
+                            minLength: 3
+                        });
+                        $("#add_node").autocomplete({
+                            source: op_ids,
+                            minLength: 3
+                        });        
+                    },
+                    error: function(error){
+                        console.log(error);
+                    }
+                });
+            });
+            
+            $(function(){
+                $("#search_button").click(function(){
+                    var search_string = $("#search_query").val();
+                    $.ajax({
+                        url: "/get_info",
+                        data : {search:search_string},
+                        success:function(response){
+                            BootstrapDialog.show({
+                              size: BootstrapDialog.SIZE_LARGE,
+                              type: BootstrapDialog.TYPE_INFO,
+                              title: "Search results",
+                              message: function(dialog){
+                                if (JSON.parse(response)['message'] == "Incorrect query!"){
+                                  dialog.setType(BootstrapDialog.TYPE_DANGER);
+                                }
+                                return JSON.parse(response)['message'];
+                              },
+                              buttons: [{
+                                    label: 'Okay',
+                                    action: function(dialogRef){
+                                        dialogRef.close();
+                                    }
+                                }]
+                            });
+                        },
+                        error:function(error){
+                            console.log(error);
+                        }
+                    });
+                });
+            });
+            $(function(){
+              $("#search_query").focus(function(){
+                $("#search_query").val('');
+              });
+            });
+        </script>     
     </body>
 </html>
